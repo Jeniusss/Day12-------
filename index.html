@@ -2,40 +2,148 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>localStorage 簡單範例</title>
-</head>
-<body>
-  <h1>📝 小小記事本（localStorage 範例）</h1>
+  <title>妙麗歲數計算機</title>
 
-  <p>請輸入一些文字，按下「儲存」，再試試看重新整理頁面：</p>
-
-  <input id="note-input" type="text" placeholder="想記住的文字" style="width: 280px;">
-  <button id="save-btn">儲存</button>
-
-  <p id="display">目前還沒有儲存任何文字。</p>
-
-  <script>
-    const KEY = 'my-note';
-    const input = document.getElementById('note-input');
-    const saveBtn = document.getElementById('save-btn');
-    const display = document.getElementById('display');
-
-    // 第一次進來頁面時，先試著把舊資料拿出來
-    const saved = localStorage.getItem(KEY);
-    if (saved) {
-      input.value = saved;
-      display.textContent = '目前儲存的文字：' + saved;
+  <style>
+    body {
+      font-family: "Comic Sans MS", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #ffe9d6, #fff4e6);
+      padding: 2rem;
     }
 
-    // 按下儲存，就把文字存進 localStorage
-    saveBtn.addEventListener('click', function () {
-      const text = input.value;
-      localStorage.setItem(KEY, text);
-      display.textContent = text
-        ? '目前儲存的文字：' + text
-        : '目前還沒有儲存任何文字。';
-    });
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      background-color: #ffffffcc;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #ff914d;
+      margin-bottom: 1rem;
+      text-shadow: 0 1px 2px rgba(255,145,77,0.25);
+    }
+
+    label {
+      display: block;
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 0.3rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+      border: 2px solid #ffd0a8;
+      border-radius: 12px;
+      font-size: 1rem;
+      background-color: #fff7ef;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #ffb075;
+      background-color: #fff0e2;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1.1rem;
+      background-color: #ff914d;
+      border: none;
+      color: white;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255,145,77,0.3);
+      transition: transform 0.15s ease, background 0.2s;
+    }
+
+    button:hover {
+      background-color: #ff7a29;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      color: #444;
+      padding: 1rem;
+      background-color: #fff3e6;
+      border-radius: 14px;
+      border: 2px dashed #ffc39b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🐾 妙麗歲數計算機 🍊</h1>
+
+    <label for="birthdate">請選擇妙麗的出生日期</label>
+    <input type="date" id="birthdate">
+
+    <button onclick="calculateAge()">開始計算 ✨</button>
+
+    <div class="result" id="result">大概是人類的...幾歲呢？ </div>
+  </div>
+
+  <script>
+
+    /* ------------------------------
+       ① 讀取 localStorage 並帶入日期
+       ------------------------------ */
+    window.onload = function() {
+      const savedDate = localStorage.getItem('birthdate');
+      if (savedDate) {
+        document.getElementById('birthdate').value = savedDate;
+      }
+    };
+
+
+    /* ------------------------------
+       ② 計算與存入 localStorage
+       ------------------------------ */
+    function calculateAge() {
+      const birthInput = document.getElementById('birthdate').value;
+
+      if (!birthInput) {
+        alert('請輸入有效的日期！');
+        return;
+      }
+
+      // 👉 把生日存到 localStorage
+      localStorage.setItem('birthdate', birthInput);
+
+      const birthDate = new Date(birthInput);
+      const today = new Date();
+
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      const d = today.getDate() - birthDate.getDate();
+      if (m < 0 || (m === 0 && d < 0)) {
+        age--;
+      }
+
+      const humanAge = age * 7;
+
+      document.getElementById('result').innerHTML = `
+        🐶 妙麗現在是 <strong>${age}</strong> 歲！<br><br>
+        👧 換算成人類就像 <strong>${humanAge}</strong> 歲囉 🍊
+      `;
+    }
   </script>
+
 </body>
 </html>
-
